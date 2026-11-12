@@ -1,14 +1,1375 @@
 {
+  "datasets": [
+    {
+      "name": "1607ae52",
+      "displayName": "customer_sales_gold",
+      "queryLines": [
+        "SELECT\r\n",
+        "    *\r\n",
+        "FROM de_module_2.jobs.customers_sales_gold\r\n",
+        ";"
+      ],
+      "columns": [
+        {
+          "displayName": "Avg Revenue per Customer",
+          "description": "Total revenue divided by distinct customers",
+          "expression": "TRY_DIVIDE(SUM(`total_price`), COUNT(DISTINCT `customer_id`))"
+        }
+      ],
+      "catalog": "de_module_2",
+      "schema": "jobs"
+    },
+    {
+      "name": "60e3c0b0",
+      "displayName": "customer_orders_ca_gold",
+      "queryLines": [
+        "SELECT \r\n",
+        "    *\r\n",
+        "FROM de_module_2.jobs.customers_orders_ca_gold\r\n",
+        ";"
+      ],
+      "columns": [
+        {
+          "displayName": "Large Orders",
+          "description": "Count of orders flagged as large",
+          "expression": "COUNT_IF(`is_large_order`)"
+        }
+      ]
+    },
+    {
+      "name": "a32d5687",
+      "displayName": "customer_orders_ny_gold",
+      "queryLines": [
+        "SELECT \r\n",
+        "    *\r\n",
+        "FROM de_module_2.jobs.customers_orders_ny_gold\r\n",
+        ";"
+      ]
+    },
+    {
+      "name": "0f89f4a3",
+      "displayName": "customer_orders_va_gold",
+      "queryLines": [
+        "SELECT \r\n",
+        "    *\r\n",
+        "FROM de_module_2.jobs.customers_orders_va_gold\r\n",
+        ";"
+      ]
+    }
+  ],
+  "relationshipGraphs": [
+    {
+      "sources": [
+        {
+          "name": "customer_sales_gold",
+          "datasetName": "1607ae52"
+        },
+        {
+          "name": "customer_orders_ca_gold",
+          "datasetName": "60e3c0b0"
+        },
+        {
+          "name": "customer_orders_ny_gold",
+          "datasetName": "a32d5687"
+        },
+        {
+          "name": "customer_orders_va_gold",
+          "datasetName": "0f89f4a3"
+        }
+      ],
+      "relationships": [
+        {
+          "name": "customer_sales_gold_customer_orders_ca_gold",
+          "from": "customer_sales_gold",
+          "to": "customer_orders_ca_gold",
+          "on": "`customer_sales_gold`.`customer_id` = `customer_orders_ca_gold`.`customer_id`",
+          "cardinality": "CARDINALITY_ONE_TO_MANY"
+        },
+        {
+          "name": "customer_sales_gold_customer_orders_ny_gold",
+          "from": "customer_sales_gold",
+          "to": "customer_orders_ny_gold",
+          "on": "`customer_sales_gold`.`customer_id` = `customer_orders_ny_gold`.`customer_id`",
+          "cardinality": "CARDINALITY_ONE_TO_MANY"
+        },
+        {
+          "name": "customer_sales_gold_customer_orders_va_gold",
+          "from": "customer_sales_gold",
+          "to": "customer_orders_va_gold",
+          "on": "`customer_sales_gold`.`customer_id` = `customer_orders_va_gold`.`customer_id`",
+          "cardinality": "CARDINALITY_ONE_TO_MANY"
+        }
+      ]
+    }
+  ],
   "pages": [
     {
       "name": "e2948258",
-      "displayName": "Untitled page",
-      "pageType": "PAGE_TYPE_CANVAS"
+      "displayName": "Main",
+      "layout": [
+        {
+          "widget": {
+            "name": "total_revenue",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "sum(customer_sales_gold__total_price)",
+                      "expression": "SUM(`customer_sales_gold`.`total_price`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Total Revenue",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "style": {
+                "fontColor": {
+                  "dark": "#EBEBEB",
+                  "light": "#EBEBEB"
+                }
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(customer_sales_gold__total_price)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            },
+            "specExtensions": {
+              "widgetBackgroundColor": {
+                "light": "#1F354B",
+                "dark": "#1F354B"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 14,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "units_purchased",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "sum(customer_sales_gold__units_purchased)",
+                      "expression": "SUM(`customer_sales_gold`.`units_purchased`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Units Purchased"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(customer_sales_gold__units_purchased)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 14,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "unique_customers",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "countdistinct(customer_sales_gold__customer_id)",
+                      "expression": "COUNT(DISTINCT `customer_sales_gold`.`customer_id`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Unique Customers"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(customer_sales_gold__customer_id)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 14,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "avg_price_per_unit",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "avg(customer_sales_gold__avg_price_per_unit)",
+                      "expression": "AVG(`customer_sales_gold`.`avg_price_per_unit`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Avg Price per Unit"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg(customer_sales_gold__avg_price_per_unit)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 9,
+            "y": 14,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "revenue_by_state",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "customer_sales_gold__state",
+                      "expression": "`customer_sales_gold`.`state`"
+                    },
+                    {
+                      "name": "sum(customer_sales_gold__total_price)",
+                      "expression": "SUM(`customer_sales_gold`.`total_price`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Revenue by State"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "customer_sales_gold__state",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(customer_sales_gold__total_price)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 32,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "revenue_by_month",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "monthly(customer_sales_gold__order_date)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `customer_sales_gold`.`order_date`)"
+                    },
+                    {
+                      "name": "sum(customer_sales_gold__total_price)",
+                      "expression": "SUM(`customer_sales_gold`.`total_price`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Revenue by Month"
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(customer_sales_gold__order_date)",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(customer_sales_gold__total_price)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 32,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "revenue_by_category",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "sum(customer_sales_gold__total_price)",
+                      "expression": "SUM(`customer_sales_gold`.`total_price`)"
+                    },
+                    {
+                      "name": "customer_sales_gold__product_category",
+                      "expression": "`customer_sales_gold`.`product_category`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {},
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "sum(customer_sales_gold__total_price)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "customer_sales_gold__product_category",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 36,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "products_by_revenue",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "customer_sales_gold__product_name",
+                      "expression": "`customer_sales_gold`.`product_name`"
+                    },
+                    {
+                      "name": "sum(customer_sales_gold__total_price)",
+                      "expression": "SUM(`customer_sales_gold`.`total_price`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Products by Revenue"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "customer_sales_gold__product_name",
+                  "scale": {
+                    "categorySize": {
+                      "number": 10,
+                      "type": "number-of-categories"
+                    },
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(customer_sales_gold__total_price)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 36,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "ca_orders_by_month",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "monthly(customer_orders_ca_gold__order_date)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `customer_orders_ca_gold`.`order_date`)"
+                    },
+                    {
+                      "name": "count(customer_orders_ca_gold__order_number)",
+                      "expression": "COUNT(`customer_orders_ca_gold`.`order_number`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "CA Orders by Month"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(customer_orders_ca_gold__order_date)",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "count(customer_orders_ca_gold__order_number)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 40,
+            "width": 4,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "ny_orders_by_month",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "monthly(customer_orders_ny_gold__order_date)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `customer_orders_ny_gold`.`order_date`)"
+                    },
+                    {
+                      "name": "count(customer_orders_ny_gold__order_number)",
+                      "expression": "COUNT(`customer_orders_ny_gold`.`order_number`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "NY Orders by Month"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(customer_orders_ny_gold__order_date)",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "count(customer_orders_ny_gold__order_number)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 40,
+            "width": 4,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "va_orders_by_month",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "monthly(customer_orders_va_gold__order_date)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `customer_orders_va_gold`.`order_date`)"
+                    },
+                    {
+                      "name": "count(customer_orders_va_gold__order_number)",
+                      "expression": "COUNT(`customer_orders_va_gold`.`order_number`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "VA Orders by Month"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(customer_orders_va_gold__order_date)",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "count(customer_orders_va_gold__order_number)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 40,
+            "width": 4,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "filter_state",
+            "queries": [
+              {
+                "name": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec96b281bb49086e010398021cf_state",
+                "query": {
+                  "datasetName": "1607ae52",
+                  "fields": [
+                    {
+                      "name": "state",
+                      "expression": "`state`"
+                    },
+                    {
+                      "name": "state_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec9a02a19bdb08eefa57e962ec9_state",
+                "query": {
+                  "datasetName": "60e3c0b0",
+                  "fields": [
+                    {
+                      "name": "state",
+                      "expression": "`state`"
+                    },
+                    {
+                      "name": "state_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec9fe5e1035aebc15b04925a7f1_state",
+                "query": {
+                  "datasetName": "a32d5687",
+                  "fields": [
+                    {
+                      "name": "state",
+                      "expression": "`state`"
+                    },
+                    {
+                      "name": "state_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1deca1fec1fcdb8f4f4c41d11421d_state",
+                "query": {
+                  "datasetName": "0f89f4a3",
+                  "fields": [
+                    {
+                      "name": "state",
+                      "expression": "`state`"
+                    },
+                    {
+                      "name": "state_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "State"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "state",
+                    "queryName": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec96b281bb49086e010398021cf_state"
+                  },
+                  {
+                    "fieldName": "state",
+                    "queryName": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec9a02a19bdb08eefa57e962ec9_state"
+                  },
+                  {
+                    "fieldName": "state",
+                    "queryName": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec9fe5e1035aebc15b04925a7f1_state"
+                  },
+                  {
+                    "fieldName": "state",
+                    "queryName": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1deca1fec1fcdb8f4f4c41d11421d_state"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "filter_category",
+            "queries": [
+              {
+                "name": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec96b281bb49086e010398021cf_product_category",
+                "query": {
+                  "datasetName": "1607ae52",
+                  "fields": [
+                    {
+                      "name": "product_category",
+                      "expression": "`product_category`"
+                    },
+                    {
+                      "name": "product_category_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Product Category"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "product_category",
+                    "queryName": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec96b281bb49086e010398021cf_product_category"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 0,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "filter_order_date",
+            "queries": [
+              {
+                "name": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec96b281bb49086e010398021cf_order_date",
+                "query": {
+                  "datasetName": "1607ae52",
+                  "fields": [
+                    {
+                      "name": "order_date",
+                      "expression": "`order_date`"
+                    },
+                    {
+                      "name": "order_date_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec9a02a19bdb08eefa57e962ec9_order_date",
+                "query": {
+                  "datasetName": "60e3c0b0",
+                  "fields": [
+                    {
+                      "name": "order_date",
+                      "expression": "`order_date`"
+                    },
+                    {
+                      "name": "order_date_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec9fe5e1035aebc15b04925a7f1_order_date",
+                "query": {
+                  "datasetName": "a32d5687",
+                  "fields": [
+                    {
+                      "name": "order_date",
+                      "expression": "`order_date`"
+                    },
+                    {
+                      "name": "order_date_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1deca1fec1fcdb8f4f4c41d11421d_order_date",
+                "query": {
+                  "datasetName": "0f89f4a3",
+                  "fields": [
+                    {
+                      "name": "order_date",
+                      "expression": "`order_date`"
+                    },
+                    {
+                      "name": "order_date_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Order Date"
+              },
+              "widgetType": "filter-date-range-picker",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "order_date",
+                    "queryName": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec96b281bb49086e010398021cf_order_date"
+                  },
+                  {
+                    "fieldName": "order_date",
+                    "queryName": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec9a02a19bdb08eefa57e962ec9_order_date"
+                  },
+                  {
+                    "fieldName": "order_date",
+                    "queryName": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec9fe5e1035aebc15b04925a7f1_order_date"
+                  },
+                  {
+                    "fieldName": "order_date",
+                    "queryName": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1deca1fec1fcdb8f4f4c41d11421d_order_date"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "revenue_by_region",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "sum(customer_sales_gold__total_price)",
+                      "expression": "SUM(`customer_sales_gold`.`total_price`)"
+                    },
+                    {
+                      "name": "customer_sales_gold__region",
+                      "expression": "`customer_sales_gold`.`region`"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`customer_sales_gold`.`region` IS NOT NULL"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Revenue by Region",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "sum(customer_sales_gold__total_price)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "customer_sales_gold__region",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 44,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "units_by_category",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "sum(customer_sales_gold__units_purchased)",
+                      "expression": "SUM(`customer_sales_gold`.`units_purchased`)"
+                    },
+                    {
+                      "name": "customer_sales_gold__product_category",
+                      "expression": "`customer_sales_gold`.`product_category`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Units Purchased by Category"
+              },
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "sum(customer_sales_gold__units_purchased)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "customer_sales_gold__product_category",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 44,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_avg_revenue_per_customer",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "measure(customer_sales_gold__Avg Revenue per Customer)",
+                      "expression": "MEASURE(`customer_sales_gold`.`Avg Revenue per Customer`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Avg Revenue per Customer"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(customer_sales_gold__Avg Revenue per Customer)",
+                  "format": {
+                    "abbreviation": "compact",
+                    "currencyCode": "USD",
+                    "type": "number-currency"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 16,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_large_orders_ca",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "measure(customer_orders_ca_gold__Large Orders)",
+                      "expression": "MEASURE(`customer_orders_ca_gold`.`Large Orders`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Large Orders (CA)"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(customer_orders_ca_gold__Large Orders)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 16,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_large_orders_ny",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "count(customer_orders_ny_gold__order_number)",
+                      "expression": "COUNT(`customer_orders_ny_gold`.`order_number`)"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`customer_orders_ny_gold`.`is_large_order` = TRUE"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Large Orders (NY)"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "count(customer_orders_ny_gold__order_number)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 16,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_large_orders_va",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "count(customer_orders_va_gold__order_number)",
+                      "expression": "COUNT(`customer_orders_va_gold`.`order_number`)"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`customer_orders_va_gold`.`is_large_order` = TRUE"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Large Orders (VA)"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "count(customer_orders_va_gold__order_number)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 9,
+            "y": 16,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "filter_customer",
+            "queries": [
+              {
+                "name": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec96b281bb49086e010398021cf_customer_name",
+                "query": {
+                  "datasetName": "1607ae52",
+                  "fields": [
+                    {
+                      "name": "customer_name",
+                      "expression": "`customer_name`"
+                    },
+                    {
+                      "name": "customer_name_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec9a02a19bdb08eefa57e962ec9_customer_name",
+                "query": {
+                  "datasetName": "60e3c0b0",
+                  "fields": [
+                    {
+                      "name": "customer_name",
+                      "expression": "`customer_name`"
+                    },
+                    {
+                      "name": "customer_name_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec9fe5e1035aebc15b04925a7f1_customer_name",
+                "query": {
+                  "datasetName": "a32d5687",
+                  "fields": [
+                    {
+                      "name": "customer_name",
+                      "expression": "`customer_name`"
+                    },
+                    {
+                      "name": "customer_name_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1deca1fec1fcdb8f4f4c41d11421d_customer_name",
+                "query": {
+                  "datasetName": "0f89f4a3",
+                  "fields": [
+                    {
+                      "name": "customer_name",
+                      "expression": "`customer_name`"
+                    },
+                    {
+                      "name": "customer_name_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Customer"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "customer_name",
+                    "queryName": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec96b281bb49086e010398021cf_customer_name"
+                  },
+                  {
+                    "fieldName": "customer_name",
+                    "queryName": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec9a02a19bdb08eefa57e962ec9_customer_name"
+                  },
+                  {
+                    "fieldName": "customer_name",
+                    "queryName": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1dec9fe5e1035aebc15b04925a7f1_customer_name"
+                  },
+                  {
+                    "fieldName": "customer_name",
+                    "queryName": "dashboards/01f1de69695d15d2be147f5493382e78/datasets/01f1deca1fec1fcdb8f4f4c41d11421d_customer_name"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 9,
+            "y": 0,
+            "width": 3,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
     }
   ],
   "uiSettings": {
     "theme": {
-      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+      "canvasBackgroundColor": {
+        "light": "#E9EBEE"
+      },
+      "widgetBackgroundColor": {
+        "light": "#FCFCFD"
+      },
+      "widgetBorderColor": {
+        "light": "#FCFCFD"
+      },
+      "selectionColor": {
+        "light": "#2272B4",
+        "dark": "#4FA3E3"
+      },
+      "visualizationColors": [
+        "#15AFDD",
+        "#2375A8",
+        "#52A870",
+        "#C85070",
+        "#C89930",
+        "#6A4C93",
+        "#E8743B"
+      ],
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED",
+      "widgetCornerRadius": 8,
+      "widgetShadow": 10,
+      "fontSettings": {
+        "base": {
+          "fontFamily": "Inter"
+        }
+      }
     },
     "applyModeEnabled": false
   }
